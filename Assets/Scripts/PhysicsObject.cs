@@ -22,7 +22,7 @@ public class PhysicsObject : MonoBehaviour {
 [SerializeField]
     protected float shellRadius = 0.01f;
 
-    private Vector2 finalPos;
+    protected Vector2 finalPos;
 
     void OnEnable()
     {
@@ -47,7 +47,7 @@ public class PhysicsObject : MonoBehaviour {
     
     }
 
-    void FixedUpdate()
+    protected void FixedUpdate()
     {
         velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
         velocity.x = targetVelocity.x;
@@ -65,18 +65,18 @@ public class PhysicsObject : MonoBehaviour {
 
         finalPos = rb2d.position;
 
-        Movement (move, false);
+        Movement (move);
 
         move = Vector2.up * deltaPosition.y;
 
-        Movement (move, true);
+        Movement (move);
 
         if (!grounded) groundNormal = Vector2.up;
 
-        //rb2d.MovePosition(finalPos);
+        rb2d.MovePosition(finalPos);
     }
 
-    void Movement(Vector2 move, bool yMovement)
+    protected void Movement(Vector2 move)
     {
         float distance = move.magnitude;
 
@@ -111,8 +111,10 @@ public class PhysicsObject : MonoBehaviour {
 
         }
 
-        rb2d.position = rb2d.position + move.normalized * distance;
-        //finalPos = finalPos + move.normalized * distance;
+        //rb2d.position = rb2d.position + move.normalized * distance;
+        //rb2d.MovePosition(rb2d.position + move.normalized * distance;
+
+        finalPos = finalPos + move.normalized * distance;
     }
 
 }
