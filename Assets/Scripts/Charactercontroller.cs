@@ -23,8 +23,8 @@ public class Charactercontroller : PhysicsObject {
     private SpriteRenderer spriteRenderer;
     [SerializeField]
     private Animator animator;
-    //private Animator animator;
 
+    public GameObject smokeEffect;
     // Use this for initialization
     void Awake () 
     {
@@ -51,7 +51,7 @@ public class Charactercontroller : PhysicsObject {
             velocity.y = jumpTakeOffSpeed;
         }
 
-        if (Input.GetButtonDown("Fire1") && timesDashed < extraDashes)
+        if (Input.GetButtonDown("Fire1") && timesDashed < extraDashes && spriteRenderer.enabled)
         {
             doDash = true;
             dashDirection = new Vector2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical")).normalized;
@@ -78,8 +78,11 @@ public class Charactercontroller : PhysicsObject {
     }
 
     void FixedUpdate() {
+        if (!spriteRenderer.enabled) return;
         if (doDash) //modified for teleport.
         {
+            Instantiate(smokeEffect,transform.position, transform.rotation);
+
             doDash = false;
             finalPos = rb2d.position;
             velocity = Vector2.zero;
@@ -90,11 +93,20 @@ public class Charactercontroller : PhysicsObject {
             Movement(move);
 
             rb2d.MovePosition(finalPos);
+
+            spriteRenderer.enabled = false;
+            StartCoroutine(coroutineAppear());
         }
         else
         {
             base.FixedUpdate();
         }
+    }
+
+    private IEnumerator coroutineAppear()
+    {
+        yield return new WaitForSeconds(0.3f);
+        spriteRenderer.enabled = true;
     }
 }
 
