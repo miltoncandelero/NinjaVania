@@ -25,6 +25,9 @@ public class Charactercontroller : PhysicsObject {
     private Animator animator;
 
     public GameObject smokeEffect;
+    public GameObject shurikenObject;
+    public GameObject swooshObject;
+
     // Use this for initialization
     void Awake () 
     {
@@ -51,12 +54,24 @@ public class Charactercontroller : PhysicsObject {
             velocity.y = jumpTakeOffSpeed;
         }
 
-        if (Input.GetButtonDown("Fire1") && timesDashed < extraDashes && spriteRenderer.enabled)
+        if (Input.GetButtonDown("Fire2") && timesDashed < extraDashes && spriteRenderer.enabled)
         {
             doDash = true;
             dashDirection = new Vector2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical")).normalized;
             timesDashed++;
         }
+
+        if (Input.GetButtonDown("Fire3")){
+			GameObject newShuriken = Instantiate(shurikenObject,transform.position, transform.rotation);
+			DummyPhysicsObject dpo = newShuriken.GetComponent<DummyPhysicsObject>();
+			dpo.direction = new Vector2(spriteRenderer.flipX?-1:1,0);
+		}
+
+        if (Input.GetButtonDown("Fire1")){
+			GameObject swoosh = Instantiate(swooshObject,transform.position + (new Vector3(spriteRenderer.flipX?-0.25f:0.25f,0,0)), transform.rotation,transform);
+            swoosh.GetComponent<SpriteRenderer>().flipX = spriteRenderer.flipX;
+            swoosh.GetComponent<BoxCollider2D>().offset *= spriteRenderer.flipX?-1:1;
+		}
 
         //sustain midflight
         if (Input.GetButtonUp ("Jump")) 
